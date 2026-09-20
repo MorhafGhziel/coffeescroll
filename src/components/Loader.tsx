@@ -40,7 +40,7 @@ export function Loader({ ready, onDone }: { ready: boolean; onDone: () => void }
         <motion.div
           className="loader"
           role="status"
-          aria-label="Loading"
+          aria-label="جارٍ التحميل"
           initial={{ clipPath: "inset(0% 0% 0% 0%)" }}
           exit={{ clipPath: "inset(0% 0% 100% 0%)", transition: { duration: 1.1, ease: [0.76, 0, 0.24, 1] } }}
         >
@@ -49,9 +49,9 @@ export function Loader({ ready, onDone }: { ready: boolean; onDone: () => void }
             <div className="loader-line">
               <motion.div style={{ scaleX: progress }} />
             </div>
-            <div className="loader-row mono">
-              <span>01 — Roasting</span>
-              <span>{counter}</span>
+            <div className="loader-row">
+              <span className="label">نُحمِّص لك الآن</span>
+              <span className="num">{counter}</span>
             </div>
           </motion.div>
         </motion.div>
