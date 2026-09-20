@@ -1,10 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Amiri, Inter_Tight, JetBrains_Mono, Tajawal } from "next/font/google";
 import "./globals.css";
+import "./landing.css";
 
-const display = Inter_Tight({
+// Arabic display: Amiri, a classic naskh serif (headlines). Arabic text: Tajawal. Inter Tight is only for the NOCTURNE wordmark.
+const display = Amiri({
   variable: "--font-display",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
+const body = Tajawal({
+  variable: "--font-body",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+});
+
+const brand = Inter_Tight({
+  variable: "--font-brand",
   subsets: ["latin"],
+  weight: ["500", "600"],
   display: "swap",
 });
 
@@ -16,8 +33,8 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NOCTURNE — Specialty coffee, crafted after dark",
-  description: "Small-batch, single-origin coffee. A cinematic journey from the first moment to the final ritual.",
+  title: { default: "نوكتورن — قهوة مختصة تُحمَّص بعد حلول الليل", template: "%s · نوكتورن" },
+  description: "موقع تجريبي لعلامة قهوة مختصة: فيلم يتحرك مع التمرير، وستة محاصيل بأسماء النجوم، ودليل تحضير مع حاسبة.",
 };
 
 export const viewport: Viewport = {
@@ -26,7 +43,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${display.variable} ${mono.variable}`}>
+    <html lang="ar" dir="rtl" className={`${display.variable} ${body.variable} ${brand.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );
