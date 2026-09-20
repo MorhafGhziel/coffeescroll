@@ -7,7 +7,8 @@ import Lenis from "lenis";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FILM, FILM_SCROLL_VH } from "@/lib/film";
 import { FrameStore, type FrameSet } from "@/lib/frames";
-import { FinalCta } from "./FinalCta";
+import { Footer } from "./Footer";
+import { HomeSections } from "./HomeSections";
 import { Loader } from "./Loader";
 import { Nav } from "./Nav";
 import { ScrollIndicator } from "./ScrollIndicator";
@@ -136,7 +137,7 @@ export function FilmExperience() {
       let lastChapter = -1;
 
       gsap.from(".film-hero .line > span", { yPercent: 115, duration: 1.6, stagger: 0.1, ease: "expo.out", delay: 0.2 });
-      gsap.from(".film-hero .mono, .nav-inner, [data-indicator]", { opacity: 0, y: -10, duration: 1.4, stagger: 0.08, ease: "expo.out", delay: 0.7 });
+      gsap.from(".film-hero .hero-meta, .nav-inner, [data-indicator]", { opacity: 0, y: -10, duration: 1.4, stagger: 0.08, ease: "expo.out", delay: 0.7 });
 
       // the film itself: progress maps linearly to frames; Lenis provides the smoothing, so no extra scrub lag
       ScrollTrigger.create({
@@ -166,17 +167,17 @@ export function FilmExperience() {
       };
       // hero is already on screen; it only leaves
       gsap.timeline({ scrollTrigger: { trigger: ".film", start: "top top", end: "bottom bottom", scrub: true } })
-        .to(".film-hero .w1", { xPercent: -18, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power1.in" }, 0.06)
-        .to(".film-hero .w2", { xPercent: -10, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power1.in" }, 0.09)
-        .to(".film-hero .w3", { xPercent: -6, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power1.in" }, 0.12)
-        .to(".film-hero .mono", { opacity: 0, duration: 0.1 }, 0.05)
+        .to(".film-hero .w1", { xPercent: 18, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power1.in" }, 0.06)
+        .to(".film-hero .w2", { xPercent: 10, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power1.in" }, 0.09)
+        .to(".film-hero .hero-meta", { opacity: 0, duration: 0.1 }, 0.05)
         .set({}, {}, 1);
       beat(".beat-approach", 0.3, 0.38, 0.5, 0.56);
       beat(".beat-crema", 0.62, 0.7, 0.8, 0.86);
       beat(".beat-depth", 0.9, 0.97);
 
+      // the chapter counter belongs to the film: it steps aside once the film has ended
+      ScrollTrigger.create({ trigger: ".film", start: "top top", end: "bottom bottom", onToggle: (self) => document.querySelector("[data-indicator]")?.classList.toggle("is-off", !self.isActive) });
       gsap.to(".nav-inner", { scale: 0.94, opacity: 0.82, ease: "none", scrollTrigger: { start: 0, end: () => innerHeight * 0.8, scrub: true } });
-      ScrollTrigger.create({ start: 40, end: "max", onToggle: (self) => document.querySelector("[data-nav]")?.classList.toggle("is-scrolled", self.isActive) });
     },
     { scope: root, dependencies: [revealed] },
   );
@@ -190,6 +191,9 @@ export function FilmExperience() {
             revealedRef.current = true;
             setRevealed(true);
             lenis.current?.start();
+            // arriving with a section link (/#visit from another page): go there once the curtain lifts
+            const target = location.hash && document.querySelector(location.hash);
+            if (target) requestAnimationFrame(() => lenis.current?.scrollTo(target as HTMLElement, { immediate: true, force: true, offset: -72 }));
           }}
         />
       )}
@@ -198,39 +202,39 @@ export function FilmExperience() {
 
       <main className="film" style={{ height: `${FILM_SCROLL_VH}vh` }}>
         <div className="film-stage">
-          <canvas ref={canvas} className="film-canvas" aria-label="A steaming black espresso cup on dark wood; the camera moves slowly into the crema" role="img" />
+          <canvas ref={canvas} className="film-canvas" aria-label="كوب إسبريسو أسود يتصاعد منه البخار على خشب داكن، والكاميرا تقترب ببطء حتى تدخل في الكريما" role="img" />
           <div className="film-shade" aria-hidden="true" />
 
-          <section className="film-hero" aria-label="Wake the senses">
+          <section className="film-hero" aria-label="أيقظ حواسك">
             <h1 className="display">
-              <span className="w1"><Line>Wake</Line></span>
-              <span className="w2"><Line>The</Line></span>
-              <span className="w3"><Line>Senses.</Line></span>
+              <span className="w1"><Line>أيقِظ</Line></span>
+              <span className="w2"><Line>حواسَّك.</Line></span>
             </h1>
-            <p className="mono">Specialty coffee<br />Roasted after dark</p>
+            <p className="hero-meta">قهوة مختصة<br />تُحمَّص بعد حلول الليل</p>
           </section>
 
-          <section className="film-beat beat-approach" aria-label="The first moment">
-            <span className="mono label">02 — The first moment</span>
-            <p className="quote">“Every roast begins with attention to detail.”</p>
+          <section className="film-beat beat-approach" aria-label="اللحظة الأولى">
+            <span className="label"><span className="num">02</span> — اللحظة الأولى</span>
+            <p className="quote">«كل تحميصة تبدأ بالانتباه إلى التفاصيل.»</p>
           </section>
 
-          <section className="film-beat beat-crema" aria-label="Depth in every pour">
-            <h2 className="display">Depth<br />in every<br />pour.</h2>
-            <ul className="mono tech">
-              <li>Single origin</li>
-              <li>Small batch</li>
-              <li>Craft roasted</li>
+          <section className="film-beat beat-crema" aria-label="عمق في كل رشفة">
+            <h2 className="display">عمقٌ<br />في كل<br />رشفة.</h2>
+            <ul className="tech">
+              <li>محصول واحد</li>
+              <li>دفعات صغيرة</li>
+              <li>تحميص حِرفي</li>
             </ul>
           </section>
 
-          <section className="film-beat beat-depth" aria-label="Stay a little longer">
-            <h2 className="display">Stay<br />a little<br />longer.</h2>
+          <section className="film-beat beat-depth" aria-label="تمهل قليلا">
+            <h2 className="display">تمهَّل<br />قليلاً.</h2>
           </section>
         </div>
       </main>
 
-      <FinalCta />
+      <HomeSections />
+      <Footer />
     </div>
   );
 }
